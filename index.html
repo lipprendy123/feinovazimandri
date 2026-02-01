@@ -145,7 +145,7 @@
       <!-- Navbar -->
       <nav class="bg-blue-600 text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
-          <h1 class="text-xl font-bold">PO System</h1>
+          <h1 class="text-xl font-bold">CV Inovazi Mandiri</h1>
           <div class="flex items-center gap-4">
             <span id="adminName"></span>
             <button
@@ -1943,76 +1943,91 @@
       }
 
       // Load PO
-      async function loadPO() {
-        try {
-          const response = await fetch(`${API_URL}/po`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await response.json();
-
-          const tbody = document.getElementById("poTable");
-          tbody.innerHTML = "";
-
-          if (data.success && data.data.po.length > 0) {
-            data.data.po.forEach((p) => {
-              tbody.innerHTML += `
-                            <tr class="border-b">
-                                <td class="px-6 py-3">${p.nopo}</td>
-                                <td class="px-6 py-3">${new Date(p.tglpo).toLocaleDateString("id-ID")}</td>
-                                <td class="px-6 py-3">${p.pelanggan?.nmplg || "-"}</td>
-                                <td class="px-6 py-3">${new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(p.jmlhrg)}</td>
-                                <td class="px-6 py-3">
-                                    <span class="px-2 py-1 rounded text-sm ${p.status === "pending" ? "bg-yellow-200" : "bg-green-200"}">${p.status}</span>
-                                </td>
-                                <td class="px-6 py-3">
-                                    <button onclick="viewPO('${p._id}')" class="text-blue-500 hover:text-blue-700 mr-2">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
+      // Load PO
+async function loadPO() {
+    try {
+        const response = await fetch(`${API_URL}/po`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const tbody = document.getElementById('poTable');
+        tbody.innerHTML = '';
+        
+        if (data.success && data.data.po.length > 0) {
+            data.data.po.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="px-6 py-3">${p.nopo}</td>
+                        <td class="px-6 py-3">${new Date(p.tglpo).toLocaleDateString('id-ID')}</td>
+                        <td class="px-6 py-3">${p.pelanggan?.nmplg || '-'}</td>
+                        <td class="px-6 py-3">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(p.jmlhrg)}</td>
+                        <td class="px-6 py-3">
+                            <span class="px-2 py-1 rounded text-sm ${p.status === 'pending' ? 'bg-yellow-200' : 'bg-green-200'}">${p.status}</span>
+                        </td>
+                        <td class="px-6 py-3">
+                            <button onclick="viewPO('${p._id}')" class="text-blue-500 hover:text-blue-700 mr-2" title="Lihat Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${p.status === 'pending' ? `
+                                <button onclick="deletePO('${p._id}')" class="text-red-500 hover:text-red-700" title="Hapus PO">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
             });
-          }
-        } catch (error) {
-          console.error("Error loading PO:", error);
+        } else {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-3 text-center text-gray-500">Belum ada data</td></tr>';
         }
-      }
-
+    } catch (error) {
+        console.error('Error loading PO:', error);
+    }
+}
       // Load SO
-      async function loadSO() {
-        try {
-          const response = await fetch(`${API_URL}/so`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await response.json();
-
-          const tbody = document.getElementById("soTable");
-          tbody.innerHTML = "";
-
-          if (data.success && data.data.so.length > 0) {
-            data.data.so.forEach((s) => {
-              tbody.innerHTML += `
-                            <tr class="border-b">
-                                <td class="px-6 py-3">${s.noso}</td>
-                                <td class="px-6 py-3">${new Date(s.tglso).toLocaleDateString("id-ID")}</td>
-                                <td class="px-6 py-3">${s.po?.nopo || "-"}</td>
-                                <td class="px-6 py-3">${s.po?.pelanggan?.nmplg || "-"}</td>
-                                <td class="px-6 py-3">
-                                    <span class="px-2 py-1 rounded text-sm ${s.status === "pending" ? "bg-yellow-200" : "bg-green-200"}">${s.status}</span>
-                                </td>
-                                <td class="px-6 py-3">
-                                    <button onclick="viewSO('${s._id}')" class="text-blue-500 hover:text-blue-700">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
+      // Load SO
+async function loadSO() {
+    try {
+        const response = await fetch(`${API_URL}/so`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const tbody = document.getElementById('soTable');
+        tbody.innerHTML = '';
+        
+        if (data.success && data.data.so.length > 0) {
+            data.data.so.forEach(s => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="px-6 py-3">${s.noso}</td>
+                        <td class="px-6 py-3">${new Date(s.tglso).toLocaleDateString('id-ID')}</td>
+                        <td class="px-6 py-3">${s.po?.nopo || '-'}</td>
+                        <td class="px-6 py-3">${s.po?.pelanggan?.nmplg || '-'}</td>
+                        <td class="px-6 py-3">
+                            <span class="px-2 py-1 rounded text-sm ${s.status === 'pending' ? 'bg-yellow-200' : 'bg-green-200'}">${s.status}</span>
+                        </td>
+                        <td class="px-6 py-3">
+                            <button onclick="viewSO('${s._id}')" class="text-blue-500 hover:text-blue-700 mr-2" title="Lihat & Print">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${s.status === 'pending' ? `
+                                <button onclick="deleteSO('${s._id}')" class="text-red-500 hover:text-red-700" title="Hapus SO">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
             });
-          }
-        } catch (error) {
-          console.error("Error loading SO:", error);
+        } else {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-3 text-center text-gray-500">Belum ada data</td></tr>';
         }
-      }
+    } catch (error) {
+        console.error('Error loading SO:', error);
+    }
+}
 
       // Load Nota
       async function loadNota() {
@@ -3717,39 +3732,103 @@ async function previewLaporanPenjualan() {
 }
 
 // Preview Barang Terlaris
+// Preview Barang Terlaris dengan Periode
 async function previewBarangTerlaris() {
+    const startDate = prompt('Masukkan tanggal mulai (YYYY-MM-DD) atau kosongkan untuk semua:', '');
+    const endDate = startDate ? prompt('Masukkan tanggal akhir (YYYY-MM-DD):', new Date().toISOString().split('T')[0]) : '';
     const limit = prompt('Tampilkan berapa barang terlaris?', '10');
+    
     if (!limit) return;
 
     try {
-        const response = await fetch(`${API_URL}/laporan/barang-terlaris?limit=${limit}`, {
+        let url = `${API_URL}/laporan/barang-terlaris?limit=${limit}`;
+        if (startDate && endDate) {
+            url += `&startDate=${startDate}&endDate=${endDate}`;
+        }
+        
+        const response = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
         
         if (data.success) {
-            document.getElementById('periodeBarangTerlaris').textContent = `Top ${limit} Barang`;
+            let periodeText = `Top ${limit} Barang`;
+            if (startDate && endDate) {
+                periodeText += ` - Periode: ${new Date(startDate).toLocaleDateString('id-ID')} s/d ${new Date(endDate).toLocaleDateString('id-ID')}`;
+            } else {
+                periodeText += ' - Semua Periode';
+            }
+            document.getElementById('periodeBarangTerlaris').textContent = periodeText;
             
             const itemsBody = document.getElementById('barangTerlarisItems');
             itemsBody.innerHTML = '';
             
-            data.data.forEach((item, index) => {
-                const medalColor = index === 0 ? 'bg-yellow-200' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-200' : '';
-                itemsBody.innerHTML += `
-                    <tr class="hover:bg-gray-50 ${medalColor}">
-                        <td class="border border-gray-300 px-4 py-2 text-center font-bold">${index + 1}</td>
-                        <td class="border border-gray-300 px-4 py-2">${item.kdbrg}</td>
-                        <td class="border border-gray-300 px-4 py-2">${item.nmbrg}</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center font-bold text-blue-600">${item.totalQty}</td>
-                        <td class="border border-gray-300 px-4 py-2 text-right">${formatRupiah(item.totalPenjualan)}</td>
-                        <td class="border border-gray-300 px-4 py-2 text-center">${item.jumlahTransaksi}</td>
-                    </tr>
-                `;
-            });
+            if (data.data.length === 0) {
+                itemsBody.innerHTML = '<tr><td colspan="6" class="border border-gray-300 px-4 py-2 text-center text-gray-500">Tidak ada data</td></tr>';
+            } else {
+                data.data.forEach((item, index) => {
+                    const medalColor = index === 0 ? 'bg-yellow-200' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-200' : '';
+                    itemsBody.innerHTML += `
+                        <tr class="hover:bg-gray-50 ${medalColor}">
+                            <td class="border border-gray-300 px-4 py-2 text-center font-bold">${index + 1}</td>
+                            <td class="border border-gray-300 px-4 py-2">${item.kdbrg}</td>
+                            <td class="border border-gray-300 px-4 py-2">${item.nmbrg}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-center font-bold text-blue-600">${item.totalQty}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right">${formatRupiah(item.totalPenjualan)}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-center">${item.jumlahTransaksi}</td>
+                        </tr>
+                    `;
+                });
+            }
             
             document.getElementById('tanggalCetakBarang').textContent = new Date().toLocaleString('id-ID');
             
             const modal = document.getElementById('previewBarangTerlarisModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            modal.style.display = 'flex';
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+
+// Preview Pelanggan Royal dengan Periode
+async function previewPelangganRoyal() {
+    const limit = prompt('Tampilkan berapa pelanggan royal?', '10');
+    if (!limit) return;
+
+    try {
+        const response = await fetch(`${API_URL}/laporan/pelanggan-royal?limit=${limit}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            const itemsBody = document.getElementById('pelangganRoyalItems');
+            itemsBody.innerHTML = '';
+            
+            if (data.data.length === 0) {
+                itemsBody.innerHTML = '<tr><td colspan="6" class="border border-gray-300 px-4 py-2 text-center text-gray-500">Tidak ada data</td></tr>';
+            } else {
+                data.data.forEach((item, index) => {
+                    const medalColor = index === 0 ? 'bg-yellow-200' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-200' : '';
+                    itemsBody.innerHTML += `
+                        <tr class="hover:bg-gray-50 ${medalColor}">
+                            <td class="border border-gray-300 px-4 py-2 text-center font-bold">${index + 1}</td>
+                            <td class="border border-gray-300 px-4 py-2">${item.noplg}</td>
+                            <td class="border border-gray-300 px-4 py-2">${item.nmplg}</td>
+                            <td class="border border-gray-300 px-4 py-2">${item.alamat}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right font-bold text-green-600">${formatRupiah(item.totalPembelian)}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-center">${item.jumlahTransaksi}</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            document.getElementById('tanggalCetakPelanggan').textContent = new Date().toLocaleString('id-ID');
+            
+            const modal = document.getElementById('previewPelangganRoyalModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             modal.style.display = 'flex';
@@ -3794,6 +3873,53 @@ async function previewPelangganRoyal() {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             modal.style.display = 'flex';
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+
+// Delete PO
+async function deletePO(id) {
+    if (!confirm('Yakin ingin menghapus PO ini?\n\nData detail PO juga akan terhapus.')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/po/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('PO berhasil dihapus!');
+            loadPO();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+
+// Delete SO
+async function deleteSO(id) {
+    if (!confirm('Yakin ingin menghapus SO ini?\n\nPeringatan: Stok barang tidak akan dikembalikan!')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/so/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('SO berhasil dihapus!');
+            loadSO();
+            loadPO(); // Refresh PO juga
+        } else {
+            alert('Error: ' + data.message);
         }
     } catch (error) {
         alert('Error: ' + error.message);
